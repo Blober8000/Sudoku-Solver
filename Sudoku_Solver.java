@@ -1,7 +1,7 @@
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Sudoku {
+public class Sudoku_Solver {
     public static String[] letters = {"A", "B", "C", "D", "E", "F", "G", "H", "I"};
     public static int[][][] board = new int[9][9][10];
     public static String red = "\u001B[31m", reset = "\u001B[0m", blue = "\u001B[34m";
