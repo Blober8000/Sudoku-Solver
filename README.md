@@ -4,7 +4,7 @@ Solves *most* sudoku boards
 To use the solver there are 2 options. 
 1. Either you start from scratch with an empty board, inserting each number individually by inputing the coordinates and the number, eg. to put a 1 on row 1 collumn 1 you'd imput A 1 1.
 
-   ```
+```
     A B C D E F G H I
   1 1 * * * * * * * *
   2 * * * * * * * * *
