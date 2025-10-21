@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class BruteForce {
-    public static void trialError(Board board) {
+    public static Board trialError(Board board) {
         ArrayList<Cell> empty = findEmpty(board);
         int i;
         while (true) {
@@ -16,7 +16,10 @@ public class BruteForce {
                 }
             }
             if (main.main(newBoard)) {
-                break;
+                for (i = 0; i < 81; i++) {
+                    board.getCell(i).setValue(newBoard.getCell(i).getValue());
+                }
+                return board;
             } else {
                 int[] temp = emptyCell.getCandidates();
                 for (int j = 1; j < 10; j++) {
