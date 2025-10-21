@@ -2,6 +2,7 @@ import java.util.Arrays;
 
 public class main {
     public static void main(String[] args) {
+        long time =  System.currentTimeMillis();
         Board board = new Board();
         boolean check;
         check = board.initializeBoard(new int[]{
@@ -24,6 +25,8 @@ public class main {
         board.drawBoard();
         System.out.println(Logic.checkCorrectness(board));
         System.out.println();
+        long time1 = System.currentTimeMillis();
+        System.out.printf("Time: %.3f seconds", (time1-time)/1000.0);
 
     }
 
