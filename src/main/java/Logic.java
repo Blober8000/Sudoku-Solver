@@ -1,6 +1,3 @@
-import java.util.Arrays;
-import java.util.Scanner;
-
 public class Logic {
     public static void solveBoard(Board board) {
         int counter = 0;
@@ -65,7 +62,7 @@ public class Logic {
     public static boolean pencilMarking(Board board, boolean failed) {
         //do ten passes to ensure every pencil marking that can be done is done
         if (!failed) {
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3 && !failed; i++) {
                 board.parseCandidates(failed);
                 failed = !checkCorrectness(board);
                 board.updateBoard(failed);
@@ -80,8 +77,8 @@ public class Logic {
     public static boolean nakedSingles(Board board, boolean failed) {
         //do a few passes to ensure every naked single is found
         if (!failed) {
-            for (int t = 0; t < 3; t++) {
-                for (int i = 1; i < 10; i++) {
+            for (int t = 0; t < 3 && !failed; t++) {
+                for (int i = 1; i < 10 && !failed; i++) {
                     board.getRows()[i].nakedSingles(failed);
                     failed = !checkCorrectness(board);
                     board.getColumns()[i].nakedSingles(failed);
@@ -99,8 +96,8 @@ public class Logic {
     public static boolean hiddenSingles(Board board, boolean failed) {
         //do a few passes to ensure every hidden single is found
         if (!failed) {
-            for (int t = 0; t < 3; t++) {
-                for (int i = 1; i < 10; i++) {
+            for (int t = 0; t < 3 && !failed; t++) {
+                for (int i = 1; i < 10 && !failed; i++) {
                     board.getRows()[i].hiddenSingles(failed);
                     failed = !checkCorrectness(board);
                     board.getColumns()[i].hiddenSingles(failed);
