@@ -167,6 +167,16 @@ for i in range(9):
        counter_x += 1/3
     counter_y += 1/3
     counter_x -= 3
+    
+for i in range(81): 
+    if i == 0: 
+        print("{", end="")
+    if i != 80: 
+        print(f"{cells[i]}, ", end="") 
+    else: 
+        print(f"{cells[i]}", end="") 
+    if i == 80: 
+        print("}")
 
 args = [str(i) for i in cells]
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -207,8 +217,8 @@ for i in range(9):
        )
 
        pyautogui.click((x_left+4) + square_size*j +10, (y_top + 4) + square_size*i +10)
-       time.sleep(0.05)
        pyautogui.write(str(solved_cells[i*9+j]))
+
 
 
 
