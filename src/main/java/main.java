@@ -5,10 +5,19 @@ public class main {
         long time =  System.currentTimeMillis();
         Board board = new Board();
         boolean check;
-        check = board.initializeBoard(new int[81]);
+        check = board.initializeBoard(new int[]
+                {       0, 4, 0, 0, 0, 0, 0, 1, 5,
+                        8, 0, 0, 3, 0, 0, 0, 2, 0,
+                        7, 0, 1, 0, 0, 0, 6, 0, 0,
+                        5, 0, 6, 0, 0, 0, 0, 3, 0,
+                        0, 0, 7, 2, 0, 0, 0, 9, 0,
+                        0, 0, 0, 0, 0, 5, 7, 0, 0,
+                        6, 0, 9, 0, 4, 3, 8, 0, 0,
+                        0, 0, 0, 6, 2, 0, 0, 0, 0,
+                        3, 0, 0, 0, 0, 8, 2, 0, 6  });
         if (check) {
             board.drawBoard();
-            int i = new Scanner(System.in).nextInt();
+            String i = new Scanner(System.in).nextLine();
         }
         Logic.solveBoard(board);
         if(!board.checkCompletion()){
