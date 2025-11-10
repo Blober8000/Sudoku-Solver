@@ -12,28 +12,21 @@ def almost_round(x, eps=1e-9):
         return math.ceil(x)
     else:
         return math.floor(x)
-    
-colours = [
-    "#FF0000", #1
-    "#008000", #2
-    "#0000FF", #3
-    "#FFFF00", #4
-    "#00FFFF", #5
-    "#FF00FF", #6
-    "#FFA500", #7
-    "#800080", #8
-    "#000000"  #9
-]
+
 
 cells = []
 for i in range(81):
     cells.append(0)
 
-gw.getAllTitles()
-
 # Pôr em 175%
-gw.getWindowsWithTitle("Sudoku Evil - Conquer the Master Level of web Sudoku puzzles - Opera")[0].activate()
-time.sleep(2.5)
+test = gw.getAllTitles()
+open = ""
+for page in test:
+    if (("Sudoku" in page) and ("Opera" in page)):
+        open = page
+
+gw.getWindowsWithTitle(open)[0].activate()
+time.sleep(1)
 
 
 y_level_x = 870
@@ -87,11 +80,9 @@ y = 4
 counter_x = 0
 counter_y = 0
 
-draw = ImageDraw.Draw(screenshot)
 for i in range(9):
     for j in range(9):
        found = False
-       out = "gray"
 
        region_square = (
            x + (square_size * j) + (1*almost_round(counter_x)), 
@@ -112,58 +103,48 @@ for i in range(9):
              #1
              if (pic.getpixel((65, 45)) == (52, 72, 97)):
                    found = True
-                   out = colours[0]
                    cells[i*9+j] = 1
        if (found == False):
              #2
              if (pic.getpixel((77, 87)) == (52, 72, 97)):
                    found = True
-                   out = colours[1]
                    cells[i*9+j] = 2   
        if (found == False):
              #4
              if (pic.getpixel((71, 72)) == (52, 72, 97)):
                    found = True
-                   out = colours[3]
                    cells[i*9+j] = 4   
        if (found == False):
              #6
              if (pic.getpixel((46, 74)) == (52, 72, 97)):
                    found = True
-                   out = colours[5]
                    cells[i*9+j] = 6
        if (found == False):
              #8
              if (pic.getpixel((42, 71)) == (52, 72, 97)):
                    found = True
-                   out = colours[7]
                    cells[i*9+j] = 8
        if (found == False):
              #9
              if (pic.getpixel((78, 54)) == (52, 72, 97)):
                    found = True
-                   out = colours[8]
                    cells[i*9+j] = 9
        if (found == False):
              #5
              if (pic.getpixel((45, 59)) == (52, 72, 97)):
                    found = True
-                   out = colours[4]
                    cells[i*9+j] = 5 
        if (found == False):
              #7
              if (pic.getpixel((59, 72)) == (52, 72, 97)):
                    found = True
-                   out = colours[6]
                    cells[i*9+j] = 7
        if (found == False):
              #3
              if (pic.getpixel((61, 32)) == (52, 72, 97)):
                    found = True
-                   out = colours[2]
                    cells[i*9+j] = 3
 
-       draw.rectangle(region_square, outline=out, width = 5)
        counter_x += 1/3
     counter_y += 1/3
     counter_x -= 3
@@ -180,6 +161,7 @@ for i in range(81):
 
 args = [str(i) for i in cells]
 script_dir = os.path.dirname(os.path.abspath(__file__))
+print(__file__)
 
 result = subprocess.run(
     ["java", "PythonConnect"] + args,
@@ -218,11 +200,3 @@ for i in range(9):
 
        pyautogui.click((x_left+4) + square_size*j +10, (y_top + 4) + square_size*i +10)
        pyautogui.write(str(solved_cells[i*9+j]))
-
-
-
-
-
-
-
-
