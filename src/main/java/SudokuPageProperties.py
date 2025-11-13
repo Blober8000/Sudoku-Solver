@@ -235,7 +235,6 @@ for ind, pic in enumerate(identifiable):
                 draw.point((pixelx+1, pixely), fill="#00ff00")
                 draw.point((pixelx, pixely+1), fill="#00ff00")
                 draw.point((pixelx-1, pixely), fill="#00ff00")
-                pic.save(f"C:\\Users\\vasco\\Documents\\{ind}.png")
                 found=True
                 break
         
