@@ -5,14 +5,20 @@ import time
 import math
 import subprocess
 import os
+import json
 
-def almost_round(x, eps=1e-9):
-    frac = x - math.floor(x)
-    if frac > 1 - eps:  
-        return math.ceil(x)
-    else:
-        return math.floor(x)
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
+if (os.path.exists(f"{script_dir}\\SudokuPageProperties.json")):
+    with open(f"{script_dir}\\SudokuPageProprerties.json", "r") as f:
+          data=json.load(f)
+else:
+    result = subprocess.run(
+        ["python", "SudokuPagePropreties.py"],
+        cwd=script_dir
+    )
+    with open(f"{script_dir}\\SudokuPageProprerties.json", "r") as f:
+          data=json.load(f)
 
 cells = []
 for i in range(81):
@@ -22,48 +28,68 @@ for i in range(81):
 test = gw.getAllTitles()
 open = ""
 for page in test:
-    if (("Sudoku" in page) and ("Opera" in page)):
+    if (("Sudoku" in page)):
         open = page
 
 gw.getWindowsWithTitle(open)[0].activate()
 time.sleep(1)
 
 
-y_level_x = 870
-y_level_y_top = 495
-y_level_y_bottom = 1615
+y_top = data["y_top"]
+y_bottom = data["y_bottom"]
+x_left = data["x_left"]
+x_right = data["x_right"]
+cell_size = data["cell_size"]
+border_width = data["border_width"]
+one = data["numbers"]["one"]
+two = data["numbers"]["two"]
+four = data["numbers"]["four"]
+six = data["numbers"]["six"]
+eight = data["numbers"]["eight"]
+nine = data["numbers"]["nine"]
+five = data["numbers"]["five"]
+seven = data["numbers"]["seven"]
+three = data["numbers"]["three"]
 
-for i in range(y_level_y_top, y_level_y_bottom, 1):
-    colour = pyautogui.pixel(y_level_x, i)
-    pyautogui.moveTo(y_level_x, i)
-    if (colour == (52, 72, 97)):
-        y_top = i
+sudokuBlue=(52, 72, 97)
+wiggle_room=5
+
+region = (
+    x_left-wiggle_room,
+    y_top-wiggle_room,
+    x_right - x_left+(wiggle_room*2),
+    y_bottom - y_top+(wiggle_room*2)
+)
+
+screenshot = pyautogui.screenshot(region = region)
+
+width = x_right - x_left+(wiggle_room*2)
+height = y_bottom - y_top+(wiggle_room*2)
+for i in range(height):
+    colour = screenshot.getpixel((int(width/2),i))
+    if (colour == sudokuBlue):
+        y_top = (y_top-wiggle_room) + i
         break
 
-for i in range(y_level_y_bottom, y_level_y_top, -1):
-    colour = pyautogui.pixel(y_level_x, i)
-    pyautogui.moveTo(y_level_x, i)
-    if (colour == ((52, 72, 97))):
-        y_bottom = i
+for i in range(height+1):
+    colour = screenshot.getpixel((int(width/2),height-i-1))
+    if (colour == sudokuBlue):
+        y_bottom = (y_bottom+wiggle_room) - i
         break
 
-x_level_y = 560
-x_level_x_left = 795
-x_level_x_right = 1915
 
-for i in range(x_level_x_left, x_level_x_right, 1):
-    colour = pyautogui.pixel(i, x_level_y)
-    pyautogui.moveTo(i, x_level_y)
-    if (colour == ((52, 72, 97))):
-        x_left = i
+for i in range(width):
+    colour = screenshot.getpixel((i,int(height/2)))
+    if (colour == sudokuBlue):
+        x_left = (x_left-wiggle_room) + i
         break
 
-for i in range(x_level_x_right, x_level_x_left, -1):
-    colour = pyautogui.pixel(i, y_level_x)
-    pyautogui.moveTo(i, x_level_y)
-    if (colour == ((52, 72, 97))):
-        x_right = i
+for i in range(height+1):
+    colour = screenshot.getpixel((height-i-1,int(height/2)))
+    if (colour == sudokuBlue):
+        x_right = (x_right+wiggle_room) - i
         break
+
 
 region = (
     x_left,
@@ -74,80 +100,39 @@ region = (
 
 screenshot = pyautogui.screenshot(region = region)
 
-square_size = 123
-x = 4
-y = 4
-counter_x = 0
-counter_y = 0
-
-for i in range(9):
-    for j in range(9):
-       found = False
+for x in range(9):
+    for y in range(9):
+       out = "gray"
 
        region_square = (
-           x + (square_size * j) + (1*almost_round(counter_x)), 
-           y + (square_size * i) + (1*almost_round(counter_y)), 
-           x + (square_size * (j+1)) + (1*almost_round(counter_x)), 
-           y + (square_size * (i+1)) + (1*almost_round(counter_y))
-       )
+        border_width + (cell_size * x), 
+        border_width + (cell_size * y), 
+        border_width + (cell_size * (x+1))-1, 
+        border_width + (cell_size * (y+1))-1
+        )
 
-       region = (
-            x_left + 4 + (square_size * j) + (1*almost_round(counter_x)),
-            y_top + 4 + (square_size * i) + (1*almost_round(counter_y)),
-            (x_left + 4 + (square_size * (j+1)) + (1*almost_round(counter_x))) - (x_left + 4 + (square_size * j) + (1*almost_round(counter_x))),
-            (y_top + 4 + (square_size * (i+1)) + (1*almost_round(counter_y))) - (y_top + 4 + (square_size * i) + (1*almost_round(counter_y)))
-       )
-       pyautogui.click((x_left+4) + square_size*j +10, (y_top + 4) + square_size*i +10)
+       pyautogui.click(x_left+ border_width + cell_size*y +10, y_top + border_width + cell_size*x +10)
        pic = screenshot.crop(region_square)
-       if (found == False):
-             #1
-             if (pic.getpixel((65, 45)) == (52, 72, 97)):
-                   found = True
-                   cells[i*9+j] = 1
-       if (found == False):
-             #2
-             if (pic.getpixel((77, 87)) == (52, 72, 97)):
-                   found = True
-                   cells[i*9+j] = 2   
-       if (found == False):
-             #4
-             if (pic.getpixel((71, 72)) == (52, 72, 97)):
-                   found = True
-                   cells[i*9+j] = 4   
-       if (found == False):
-             #6
-             if (pic.getpixel((46, 74)) == (52, 72, 97)):
-                   found = True
-                   cells[i*9+j] = 6
-       if (found == False):
-             #8
-             if (pic.getpixel((42, 71)) == (52, 72, 97)):
-                   found = True
-                   cells[i*9+j] = 8
-       if (found == False):
-             #9
-             if (pic.getpixel((78, 54)) == (52, 72, 97)):
-                   found = True
-                   cells[i*9+j] = 9
-       if (found == False):
-             #5
-             if (pic.getpixel((45, 59)) == (52, 72, 97)):
-                   found = True
-                   cells[i*9+j] = 5 
-       if (found == False):
-             #7
-             if (pic.getpixel((59, 72)) == (52, 72, 97)):
-                   found = True
-                   cells[i*9+j] = 7
-       if (found == False):
-             #3
-             if (pic.getpixel((61, 32)) == (52, 72, 97)):
-                   found = True
-                   cells[i*9+j] = 3
+             
+       if (pic.getpixel(one) == sudokuBlue): #1            
+            cells[y*9+x] = 1   
+       elif (pic.getpixel(two) == sudokuBlue): #2                   
+            cells[y*9+x] = 2  
+       elif (pic.getpixel(four) == sudokuBlue): #4           
+            cells[y*9+x] = 4 
+       elif (pic.getpixel(six) == sudokuBlue): #6                  
+            cells[y*9+x] = 6
+       elif (pic.getpixel(eight) == sudokuBlue): #8                  
+            cells[y*9+x] = 8
+       elif (pic.getpixel(nine) == sudokuBlue): #9                   
+            cells[y*9+x] = 9
+       elif (pic.getpixel(five) == sudokuBlue): #5           
+            cells[y*9+x] = 5 
+       elif (pic.getpixel(seven) == sudokuBlue): #7
+            cells[y*9+x] = 7
+       elif (pic.getpixel(three) == sudokuBlue): #3
+            cells[y*9+x] = 3
 
-       counter_x += 1/3
-    counter_y += 1/3
-    counter_x -= 3
     
 for i in range(81): 
     if i == 0: 
@@ -160,8 +145,6 @@ for i in range(81):
         print("}")
 
 args = [str(i) for i in cells]
-script_dir = os.path.dirname(os.path.abspath(__file__))
-print(__file__)
 
 result = subprocess.run(
     ["java", "PythonConnect"] + args,
@@ -181,22 +164,15 @@ cleaned = last_line.strip("[]")
 string_numbers = cleaned.split(",")
 solved_cells = [int(num.strip()) for num in string_numbers]
 
-for i in range(9):
-    for j in range(9):
+for y in range(9):
+    for x in range(9):
 
        region_square = (
-           x + (square_size * j) + (1*almost_round(counter_x)), 
-           y + (square_size * i) + (1*almost_round(counter_y)), 
-           x + (square_size * (j+1)) + (1*almost_round(counter_x)), 
-           y + (square_size * (i+1)) + (1*almost_round(counter_y))
-       )
+        border_width + (cell_size * x), 
+        border_width + (cell_size * y), 
+        border_width + (cell_size * (x+1))-1, 
+        border_width + (cell_size * (y+1))-1
+        )
 
-       region = (
-            x_left + 4 + (square_size * j) + (1*almost_round(counter_x)),
-            y_top + 4 + (square_size * i) + (1*almost_round(counter_y)),
-            (x_left + 4 + (square_size * (j+1)) + (1*almost_round(counter_x))) - (x_left + 4 + (square_size * j) + (1*almost_round(counter_x))),
-            (y_top + 4 + (square_size * (i+1)) + (1*almost_round(counter_y))) - (y_top + 4 + (square_size * i) + (1*almost_round(counter_y)))
-       )
-
-       pyautogui.click((x_left+4) + square_size*j +10, (y_top + 4) + square_size*i +10)
-       pyautogui.write(str(solved_cells[i*9+j]))
+       pyautogui.click((x_left+4) + cell_size*x +10, (y_top + 4) + cell_size*y +10)
+       pyautogui.write(str(solved_cells[y*9+x]))
