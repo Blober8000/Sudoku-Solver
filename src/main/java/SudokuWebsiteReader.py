@@ -1,8 +1,6 @@
 import pyautogui
-from PIL import Image, ImageDraw, ImageFont
 import pygetwindow as gw
 import time
-import math
 import subprocess
 import os
 import json
@@ -24,11 +22,10 @@ cells = []
 for i in range(81):
     cells.append(0)
 
-# Pôr em 175%
 test = gw.getAllTitles()
 open = ""
 for page in test:
-    if (("Sudoku" in page)):
+    if (("Sudoku" in page and "Opera" in page)):
         open = page
 
 gw.getWindowsWithTitle(open)[0].activate()
@@ -111,7 +108,7 @@ for x in range(9):
         border_width + (cell_size * (y+1))-1
         )
 
-       pyautogui.click(x_left+ border_width + cell_size*y +10, y_top + border_width + cell_size*x +10)
+       #pyautogui.click(x_left+ border_width + cell_size*y +10, y_top + border_width + cell_size*x +10)
        pic = screenshot.crop(region_square)
              
        if (pic.getpixel(one) == sudokuBlue): #1            
@@ -154,25 +151,30 @@ result = subprocess.run(
 )
 
 lines = result.stdout.strip().splitlines()
+
 if lines:
     last_line = lines[-1]
     print(last_line)
-else:
-    print("No output from Java.")
+    if "\u001B" in last_line:
+        solved_cells = 0
+    else:
+        cleaned = last_line.strip("[]")
+        string_numbers = cleaned.split(",")
+        solved_cells = [int(num.strip()) for num in string_numbers]
 
-cleaned = last_line.strip("[]")
-string_numbers = cleaned.split(",")
-solved_cells = [int(num.strip()) for num in string_numbers]
 
-for y in range(9):
-    for x in range(9):
+if solved_cells != 0:
+    for y in range(9):
+        for x in range(9):
+            if (cells[y*9+x] != 0):
+                continue
 
-       region_square = (
-        border_width + (cell_size * x), 
-        border_width + (cell_size * y), 
-        border_width + (cell_size * (x+1))-1, 
-        border_width + (cell_size * (y+1))-1
-        )
+            region_square = (
+                border_width + (cell_size * x), 
+                border_width + (cell_size * y), 
+                border_width + (cell_size * (x+1))-1, 
+                border_width + (cell_size * (y+1))-1
+                )
 
-       pyautogui.click((x_left+4) + cell_size*x +10, (y_top + 4) + cell_size*y +10)
-       pyautogui.write(str(solved_cells[y*9+x]))
+            pyautogui.click((x_left+4) + cell_size*x +10, (y_top + 4) + cell_size*y +10)
+            pyautogui.write(str(solved_cells[y*9+x]))

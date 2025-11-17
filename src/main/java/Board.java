@@ -215,4 +215,15 @@ public class Board {
         }
         return newBoard;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        Board b = (Board) o;
+        for (int i = 0; i < 81; i++) {
+            if (cells[i].getValue() != b.getCell(i).getValue()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

@@ -37,24 +37,18 @@ regionX = (
 screenshotY = pyautogui.screenshot(region=regionY)
 screenshotX = pyautogui.screenshot(region=regionX)
 
-pyautogui.moveTo(regionX[0], regionX[1])
-time.sleep(1)
 for i in range(width):
     colour = screenshotX.getpixel((i,0))
     if (colour == (52, 72, 97)):
         x_left = i
         break
 
-pyautogui.moveTo(regionX[2], regionX[1])
-time.sleep(1)
 for i in range(height+1):
     colour = screenshotX.getpixel((height-i-1,0))
     if (colour == (52, 72, 97)):
         x_right = height-i-1
         break
 
-pyautogui.moveTo(regionY[0], regionY[1])
-time.sleep(1)
 for i in range(height):
     colour = screenshotY.getpixel((0,i))
     if (colour == (52, 72, 97)):
