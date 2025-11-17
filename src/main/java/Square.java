@@ -80,7 +80,6 @@ public class Square{
                         temp = cell;
                     }
                 }
-                System.out.println("Square Naked " + temp + " " + (45 - sum));
                 temp.setValue(45 - sum);
                 board.parseCandidates(failed);
             }
@@ -114,7 +113,6 @@ public class Square{
                         continue;
                     } else if (cell.getCandidates()[value] != 0) {
                         temp = cell;
-                        System.out.println("Row Hidden " + temp + " " + (value));
                         temp.setValue(value);
                         board.parseCandidates(failed);
                         break;

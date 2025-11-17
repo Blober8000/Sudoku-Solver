@@ -5,6 +5,10 @@ public class BruteForce {
     public static Board trialError(Board board) {
         EmptyBoard.initializeBoard(new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
         ArrayList<Cell> empty = findEmpty(board);
+        empty = organizeEmpty(empty);
+        if(empty.isEmpty()){
+            return board;
+        }
         int i;
         while (true) {
             Cell emptyCell = empty.get(0);
@@ -87,6 +91,43 @@ public class BruteForce {
                 empty.add(cell);
             }
         }
+        return empty;
+    }
+
+    public static ArrayList<Cell> organizeEmpty(ArrayList<Cell> empty) {
+
+        empty.sort((cell1, cell2) -> {
+            int count1 = 0;
+            int count2 = 0;
+
+            for (int k = 1; k < 10; k++) {
+                if (cell1.getCandidates()[k] != 0) {
+                    count1++;
+                }
+            }
+
+            for (int k = 1; k < 10; k++) {
+                if (cell2.getCandidates()[k] != 0) {
+                    count2++;
+                }
+            }
+
+            return Integer.compare(count1, count2);
+        });
+
+        int count;
+        do{
+            count = 0;
+            for (int k : empty.get(0).getCandidates()) {
+                if (k != 0){
+                    count ++;
+                }
+            }
+            if(count == 0){
+                empty.remove(0);
+            }
+        }while(count == 0 && !empty.isEmpty());
+
         return empty;
     }
 }

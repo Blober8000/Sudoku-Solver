@@ -64,7 +64,6 @@ public class Cell {
             }
             if (count == 8) {
                 this.setValue(only);
-                System.out.println("Pencil Marking " + this + " " + (only));
             }
             board.parseCandidates(false);
         }
@@ -116,7 +115,6 @@ public class Cell {
                 temp[i] = value;
             }
         }
-        System.out.println(Arrays.toString(this.candidates));
         this.candidates = Arrays.copyOf(temp,temp.length);
     }
 

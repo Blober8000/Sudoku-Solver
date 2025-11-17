@@ -65,7 +65,6 @@ public class Row {
                         temp = cell;
                     }
                 }
-                System.out.println("Row Naked " + temp + " " + (45 - sum));
                 temp.setValue(45 - sum);
                 board.parseCandidates(failed);
             }
@@ -99,7 +98,6 @@ public class Row {
                         continue;
                     } else if (cell.getCandidates()[value] != 0) {
                         temp = cell;
-                        System.out.println("Row Hidden " + temp + " " + (value));
                         temp.setValue(value);
                         board.parseCandidates(failed);
                         break;

@@ -10,7 +10,7 @@ public class Logic {
             failed = nakedSingles(board, failed);
             failed = pencilMarking(board, failed);
             counter++;
-            if (counter == 10) {
+            if (counter == 1) {
                 stop = true;
             }
         }
@@ -67,7 +67,6 @@ public class Logic {
                 failed = !checkCorrectness(board);
                 board.updateBoard(failed);
                 failed = !checkCorrectness(board);
-                board.drawBoard();
             }
             return failed;
         }
@@ -86,7 +85,6 @@ public class Logic {
                     board.getSquares()[i].nakedSingles(failed);
                     failed = !checkCorrectness(board);
                 }
-                board.drawBoard();
             }
             return failed;
         }
@@ -105,7 +103,6 @@ public class Logic {
                     board.getSquares()[i].hiddenSingles(failed);
                     failed = !checkCorrectness(board);
                 }
-                board.drawBoard();
             }
             return failed;
         }
