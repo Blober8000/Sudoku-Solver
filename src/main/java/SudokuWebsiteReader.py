@@ -1,5 +1,6 @@
 import pyautogui
 import pygetwindow as gw
+from PIL import ImageDraw
 import time
 import subprocess
 import os
@@ -8,14 +9,14 @@ import json
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 if (os.path.exists(f"{script_dir}\\SudokuPageProperties.json")):
-    with open(f"{script_dir}\\SudokuPageProprerties.json", "r") as f:
+    with open(f"{script_dir}\\SudokuPageProperties.json", "r") as f:
           data=json.load(f)
 else:
     result = subprocess.run(
-        ["python", "SudokuPagePropreties.py"],
+        ["python", "SudokuPageProperties.py"],
         cwd=script_dir
     )
-    with open(f"{script_dir}\\SudokuPageProprerties.json", "r") as f:
+    with open(f"{script_dir}\\SudokuPageProperties.json", "r") as f:
           data=json.load(f)
 
 cells = []
@@ -96,39 +97,80 @@ region = (
 )
 
 screenshot = pyautogui.screenshot(region = region)
+draw = ImageDraw.Draw(screenshot)
+
+def crosshair(draw, crosshair, colour, region):
+    draw.point((region[0] + crosshair[0], region[1] + crosshair[1]), fill=colour)
+    draw.point((region[0] + crosshair[0]+1, region[1] + crosshair[1]), fill=colour)
+    draw.point((region[0] + crosshair[0], region[1] + crosshair[1]+1), fill=colour)
+    draw.point((region[0] + crosshair[0]-1, region[1] + crosshair[1]), fill=colour)
+    draw.point((region[0] + crosshair[0], region[1] + crosshair[1]-1), fill=colour)
+
+
+colours = [
+    "#FF0000", #1
+    "#008000", #2
+    "#FFFF00", #4
+    "#000000", #9
+    "#FF00FF", #6
+    "#800080", #8
+    "#00FFFF", #5
+    "#FFA500", #7
+    "#0000FF" #3  
+]
 
 for x in range(9):
     for y in range(9):
        out = "gray"
-
        region_square = (
-        border_width + (cell_size * x), 
-        border_width + (cell_size * y), 
-        border_width + (cell_size * (x+1))-1, 
-        border_width + (cell_size * (y+1))-1
+            (border_width+1) + (cell_size*x) - (round(0.4*x)), 
+            (border_width+1) + (cell_size*y) - (round(0.4*y)),
+            border_width + (cell_size-2) + (cell_size*x) - (round(0.4*x)),
+            border_width + (cell_size-2) + (cell_size*y) - (round(0.4*y))
         )
 
        #pyautogui.click(x_left+ border_width + cell_size*y +10, y_top + border_width + cell_size*x +10)
        pic = screenshot.crop(region_square)
              
+         # 1 2 4 9 6 8 5 7 3
        if (pic.getpixel(one) == sudokuBlue): #1            
-            cells[y*9+x] = 1   
+            cells[y*9+x] = 1  
+            out=colours[0]
+            crosshair(draw, one, out, region_square) 
        elif (pic.getpixel(two) == sudokuBlue): #2                   
-            cells[y*9+x] = 2  
+            cells[y*9+x] = 2
+            out=colours[1]
+            crosshair(draw,two, out, region_square) 
        elif (pic.getpixel(four) == sudokuBlue): #4           
             cells[y*9+x] = 4 
-       elif (pic.getpixel(six) == sudokuBlue): #6                  
-            cells[y*9+x] = 6
-       elif (pic.getpixel(eight) == sudokuBlue): #8                  
-            cells[y*9+x] = 8
+            out=colours[2]
+            crosshair(draw,four, out, region_square) 
        elif (pic.getpixel(nine) == sudokuBlue): #9                   
             cells[y*9+x] = 9
+            out=colours[5]
+            crosshair(draw,nine, out, region_square) 
+       elif (pic.getpixel(six) == sudokuBlue): #6                  
+            cells[y*9+x] = 6
+            out=colours[3]
+            crosshair(draw,six, out, region_square) 
+       elif (pic.getpixel(eight) == sudokuBlue): #8                  
+            cells[y*9+x] = 8
+            out=colours[4]
+            crosshair(draw,eight, out, region_square) 
        elif (pic.getpixel(five) == sudokuBlue): #5           
             cells[y*9+x] = 5 
+            out=colours[6]
+            crosshair(draw,five, out, region_square) 
        elif (pic.getpixel(seven) == sudokuBlue): #7
             cells[y*9+x] = 7
+            out=colours[7]
+            crosshair(draw,seven, out, region_square) 
        elif (pic.getpixel(three) == sudokuBlue): #3
             cells[y*9+x] = 3
+            out=colours[8]
+            crosshair(draw,three, out, region_square) 
+       draw.rectangle(region_square, outline=out)
+#screenshot.show()
 
     
 for i in range(81): 

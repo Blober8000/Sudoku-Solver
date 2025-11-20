@@ -109,15 +109,14 @@ for S in cellsStr:
     cells.append(numbers0)
 
 all_cells = []
-counter_x=0
-counter_y=0
-for y in range(9):
-    for x in range(9):
+draw = ImageDraw.Draw(screenshotBoard)
+for x in range(9):
+    for y in range(9):
         regionCell = (
-        border_width + (cell_size * x) + (1*math.ceil(counter_x)), 
-        border_width + (cell_size * y) + (1*math.ceil(counter_y)), 
-        border_width + (cell_size * (x+1)) + (1*math.ceil(counter_x)), 
-        border_width + (cell_size * (y+1)) + (1*math.ceil(counter_y))
+            (border_width+1) + (cell_size*x) - (round(0.4*x)), 
+            (border_width+1) + (cell_size*y) - (round(0.4*y)),
+            border_width + (cell_size-2) + (cell_size*x) - (round(0.4*x)),
+            border_width + (cell_size-2) + (cell_size*y) - (round(0.4*y))
         )
         pic = screenshotBoard.crop(regionCell)
         all_cells.append(pic)
@@ -125,16 +124,15 @@ for y in range(9):
 cell_pics = []
 for i in range(10):
     arr = cells[i]
-    cell_pics.append(all_cells[(arr[1]*9)+arr[0]])
-
+    cell_pics.append(all_cells[(arr[0]*9)+arr[1]])
 
 colours = [
     "#FF0000", #1
     "#008000", #2
     "#FFFF00", #4
+    "#000000", #9
     "#FF00FF", #6
     "#800080", #8
-    "#000000", #9
     "#00FFFF", #5
     "#FFA500", #7
     "#0000FF" #3  
@@ -147,25 +145,25 @@ cell_pics[3] = temp
 
 # 1 2 4 3 5 6 7 8 9
 temp = cell_pics[3]
-cell_pics[3] = cell_pics[5] #3<->6
-cell_pics[5] = temp
-
-# 1 2 4 6 5 3 7 8 9
-temp = cell_pics[4]
-cell_pics[4] = cell_pics[7] #5<->8
-cell_pics[7] = temp
-
-# 1 2 4 6 8 3 7 5 9
-temp = cell_pics[5]
-cell_pics[5] = cell_pics[8] #3<->9
+cell_pics[3] = cell_pics[8] #3<->9
 cell_pics[8] = temp
 
-# 1 2 4 6 8 9 7 5 3
+# 1 2 4 9 5 6 7 8 3
+temp = cell_pics[4]
+cell_pics[4] = cell_pics[5] #5<->6
+cell_pics[5] = temp
+
+# 1 2 4 9 6 5 7 8 3
 temp = cell_pics[6]
-cell_pics[6] = cell_pics[7] #7<->5
+cell_pics[6] = cell_pics[7] #7<->8
 cell_pics[7] = temp
 
-# 1 2 4 6 8 9 5 7 3
+# 1 2 4 9 6 5 8 7 3
+temp = cell_pics[5]
+cell_pics[5] = cell_pics[6] #5<->8
+cell_pics[6] = temp
+
+# 1 2 4 9 6 8 5 7 3
 
 canvas = cell_pics[9].copy()
 screenshots = []
@@ -173,12 +171,13 @@ for i in range(9):
     screenshots.append(cell_pics[i].copy())
 pics = screenshots.copy()
 
+
+cell_size = cell_size - 3
 for i, pic in enumerate(pics):
     draw = ImageDraw.Draw(canvas)
     for pixelx in range(cell_size):
         for pixely in range(cell_size):
             draw.point((pixelx, pixely), fill="#ffffff")
-
             colour = pic.getpixel((pixelx, pixely))
             if(colour == (52, 72, 97) and pixelx!=0 and pixelx!=1 and pixelx!=2 and pixelx!=cell_size-1 and pixelx!=cell_size-2 and pixelx!=cell_size-3 and pixely!=0 and pixely!=1 and pixely!=2 and pixely!=cell_size-1 and pixely!=cell_size-2 and pixely!=cell_size-3):
                 draw.point((pixelx, pixely), fill="#000000")
@@ -208,28 +207,37 @@ for number in range(1,10,1):
 
     identifiable.append(canvas.copy())
 
-
-
 crosshair = []
 for ind, pic in enumerate(identifiable):
     found=False
     for pixelx in range(1,cell_size-1,1):
         for pixely in range(1,cell_size-1,1):
             colourC = pic.getpixel((pixelx,pixely))
-            colourU = pic.getpixel((pixelx,pixely-1))
-            colourR = pic.getpixel((pixelx+1,pixely))
-            colourD = pic.getpixel((pixelx,pixely+1))
-            colourL = pic.getpixel((pixelx-1,pixely))
+            colourN = pic.getpixel((pixelx,pixely-1))
+            colourNE = pic.getpixel((pixelx+1,pixely-1))
+            colourE = pic.getpixel((pixelx+1,pixely))
+            colourSE = pic.getpixel((pixelx+1,pixely+1))
+            colourS = pic.getpixel((pixelx,pixely+1))
+            colourSW = pic.getpixel((pixelx-1,pixely+1))
+            colourW = pic.getpixel((pixelx-1,pixely))
+            colourNW = pic.getpixel((pixelx-1,pixely-1))
 
-            if (colourC != (255,255,255) and colourC == colourU and colourC == colourR and colourC == colourD and colourC == colourL):
+            if (colourC != (255,255,255) and colourC == colourN and colourC == colourE and colourC == colourS and colourC == colourW and colourC == colourNE and colourC == colourNW and colourC == colourSE and colourC == colourSW):
                 crosshair.append((pixelx, pixely))
                 draw = ImageDraw.Draw(pic)
                 draw.point((pixelx, pixely), fill="#00ff00")
+
                 draw.point((pixelx, pixely-1), fill="#00ff00")
                 draw.point((pixelx+1, pixely), fill="#00ff00")
                 draw.point((pixelx, pixely+1), fill="#00ff00")
                 draw.point((pixelx-1, pixely), fill="#00ff00")
+
+                draw.point((pixelx+1, pixely-1), fill="#00ff00")
+                draw.point((pixelx+1, pixely+1), fill="#00ff00")
+                draw.point((pixelx-1, pixely+1), fill="#00ff00")
+                draw.point((pixelx-1, pixely-1), fill="#00ff00")
                 found=True
+                pic.show()
                 break
         
         if(found == True):
@@ -237,6 +245,9 @@ for ind, pic in enumerate(identifiable):
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
+cell_size = cell_size + 3
+
+# 1 2 4 9 6 8 5 7 3
 with open(f"{script_dir}\\SudokuPageProprerties.json", "w") as f:
     data = {
         "y_top": y_top,
@@ -249,9 +260,9 @@ with open(f"{script_dir}\\SudokuPageProprerties.json", "w") as f:
             "one": crosshair[0],
             "two": crosshair[1],
             "four": crosshair[2],
-            "six": crosshair[3],
-            "eight": crosshair[4],
-            "nine": crosshair[5],
+            "nine": crosshair[3],
+            "six": crosshair[4],
+            "eight": crosshair[5],
             "five": crosshair[6],
             "seven": crosshair[7],
             "three": crosshair[8] 
