@@ -6,6 +6,9 @@ public class Logic {
             failed = pencilMarking(board, failed);
             failed = nakedSingles(board, failed);
             failed = pencilMarking(board, failed);
+            failed = nakedSingles(board, failed);
+            failed = obviousPairs(board, failed);
+            failed = pencilMarking(board, failed);
             failed = hiddenSingles(board, failed);
             failed = nakedSingles(board, failed);
             failed = pencilMarking(board, failed);
@@ -101,6 +104,23 @@ public class Logic {
                     board.getColumns()[i].hiddenSingles(failed);
                     failed = !checkCorrectness(board);
                     board.getSquares()[i].hiddenSingles(failed);
+                    failed = !checkCorrectness(board);
+                }
+            }
+            return failed;
+        }
+        return true;
+    }
+
+    public static boolean obviousPairs(Board board, boolean failed) {
+        if (!failed) {
+            for (int t = 0; t < 3 && !failed; t++) {
+                for (int i = 1; i < 10 && !failed; i++) {
+                    board.getColumns()[i].obviousPairs(failed);
+                    failed = !checkCorrectness(board);
+                    board.getRows()[i].obviousPairs(failed);
+                    failed = !checkCorrectness(board);
+                    board.getSquares()[i].obviousPairs(failed);
                     failed = !checkCorrectness(board);
                 }
             }

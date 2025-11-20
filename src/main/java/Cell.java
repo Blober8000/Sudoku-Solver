@@ -120,7 +120,6 @@ public class Cell {
 
     public void updateCandidates() {
         if (this.value == 0) {
-            for (int i = 0; i < 10; i++) this.candidates[i] = i;
 
             for (Cell cell : this.row.getCells()) {
                 if (cell.getValue() != 0) {

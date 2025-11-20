@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Row {
     private final Board board;
     private Cell[] cells;
@@ -101,6 +103,69 @@ public class Row {
                         temp.setValue(value);
                         board.parseCandidates(failed);
                         break;
+                    }
+                }
+            }
+        }
+    }
+
+    public void obviousPairs(boolean failed) {
+        if (!failed) {
+            int counter;
+            int pos = 0;
+            int[] candidates = new int[9];
+            for (Cell cell : cells) {
+                counter = 0;
+                for (int i : cell.getCandidates()) {
+                    if (i != 0) {
+                        counter++;
+                    }
+                }
+                candidates[pos] = counter;
+                pos++;
+            }
+
+            pos = 0;
+            ArrayList<Integer> positions = new ArrayList<>();
+            for (int i : candidates) {
+                if (i == 2) {
+                    positions.add(pos);
+                }
+                pos++;
+            }
+
+            int[][] pairs = new int[positions.size()][2];
+            for (int i = 0; i < positions.size(); i++) {
+                int[] pair = new int[2];
+                for (int j : cells[positions.get(i)].getCandidates()) {
+                    if (j != 0) {
+                        if (pair[0] == 0) {
+                            pair[0] = j;
+                        } else {
+                            pair[1] = j;
+                        }
+                    }
+                }
+                pairs[i] = pair;
+            }
+
+            for (int i = 0; i < pairs.length; i++) {
+                for (int j = i+1; j < pairs.length; j++) {
+                    if (pairs[i][0] == pairs[j][0] && pairs[i][1] == pairs[j][1]) {
+                        int candidate1 = pairs[i][0], candidate2 = pairs[i][1];
+                        pos = 0;
+                        for (Cell cell : cells) {
+                            if (pos == positions.get(i) || pos == positions.get(j)) {
+                                pos++;
+                                continue;
+                            }
+                            int[] temp = cell.getCandidates();
+                            temp[candidate1] = 0;
+                            temp[candidate2] = 0;
+                            cell.setCandidates(temp);
+                            pos++;
+                        }
+                        board.parseCandidates(failed);
                     }
                 }
             }
