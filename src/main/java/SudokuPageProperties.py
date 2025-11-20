@@ -248,7 +248,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 cell_size = cell_size + 3
 
 # 1 2 4 9 6 8 5 7 3
-with open(f"{script_dir}\\SudokuPageProprerties.json", "w") as f:
+with open(f"{script_dir}\\SudokuPageProperties.json", "w") as f:
     data = {
         "y_top": y_top,
         "y_bottom": y_bottom,
