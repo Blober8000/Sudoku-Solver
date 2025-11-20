@@ -165,7 +165,7 @@ public class Row {
                             cell.setCandidates(temp);
                             pos++;
                         }
-                        board.parseCandidates(failed);
+                        board.updateBoard(failed);
                     }
                 }
             }
